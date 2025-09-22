@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 
-export USER=$(whoami)
+export USER="stash"
 
 exec /app/stash "@"
