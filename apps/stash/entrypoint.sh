@@ -11,7 +11,7 @@ for dir in "${dirs[@]}"; do
   # Find all requirements.txt files recursively
   find "$dir" -type f -name "requirements.txt" | while read -r reqfile; do
     echo "Installing Python requirements from: $reqfile"
-    pip install --no-cache-dir -r "$reqfile"
+    pip install --target . --no-cache-dir --break-system-packages -r "$reqfile"
   done
 done
 
