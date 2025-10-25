@@ -14,7 +14,8 @@ RUN apk add --no-cache --no-progress \
     catatonit \
     ca-certificates \
     curl \
-    ffmpeg
+    ffmpeg \
+    python3
 
 RUN curl -fsSL -o /app/stash https://github.com/stashapp/stash/releases/download/${VERSION}/stash-linux${STASHARCH}
 
