@@ -15,7 +15,8 @@ RUN apk add --no-cache --no-progress \
     ca-certificates \
     curl \
     ffmpeg \
-    python3
+    python3 \
+    py3-pip
 
 RUN curl -fsSL -o /app/stash https://github.com/stashapp/stash/releases/download/${VERSION}/stash-linux${STASHARCH}
 
