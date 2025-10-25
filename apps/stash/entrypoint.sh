@@ -2,6 +2,11 @@
 
 export USER="stash"
 
+if ! wget -q --timeout=5 --spider http://example.com; then
+  echo "DNS not ready yet; retrying..." >&2
+  sleep 2
+fi
+
 dirs=(
   /config/plugins
   /config/scrapers
