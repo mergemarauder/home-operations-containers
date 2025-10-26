@@ -4,7 +4,7 @@ name: Retry Release
 
 on:
   schedule:
-    - cron: "30 1 * * *"
+    - cron: 30 1 * * *
   workflow_dispatch:
 
 permissions:
@@ -44,17 +44,17 @@ jobs:
           persist-credentials: false
 
       - name: Generate Token
-        uses: actions/create-github-app-token@a8d616148505b5069dccd32f177bb87d7f39123b # v2.1.1
+        uses: actions/create-github-app-token@67018539274d69449ef7c02e8e71183d1719ab42 # v2.1.4
         id: app-token
         with:
           app-id: ${{ secrets.BOT_APP_ID }}
           private-key: ${{ secrets.BOT_APP_PRIVATE_KEY }}
 
       - name: Install Cosign
-        uses: sigstore/cosign-installer@d58896d6a1865668819e1d91763c7751a165e159 # v3.9.2
+        uses: sigstore/cosign-installer@faadad0cce49287aee09b3a48701e75088a2c6ad # v4.0.0
 
       - name: Install regctl
-        uses: regclient/actions/regctl-installer@2a0bc4dd4f92bcc807db726c33ea1c88be3d435d # main
+        uses: regclient/actions/regctl-installer@df29323daedc1f78ee74b261bd8d849327cb4ff0 # main
 
       - name: Get Bake Options
         uses: ./.github/actions/app-options
@@ -62,7 +62,7 @@ jobs:
         with:
           app: ${{ matrix.app }}
 
-      - name: Get Container Registry Version
+      - name: Get App Registry Version
         id: registry
         env:
           GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
@@ -97,7 +97,7 @@ jobs:
           {
               echo '## Retrying Release'
               echo
-              echo '| Container Name | Actual Version | Expected Version |'
-              echo '|----------------|------------------|----------------|'
+              echo '| App Name | Actual Version | Expected Version |'
+              echo '|----------|----------------|------------------|'
               echo '| `${{ matrix.app }}` | `${{ steps.registry.outputs.version }}` | `${{ steps.app-options.outputs.version }}` |'
           } >> $GITHUB_STEP_SUMMARY
