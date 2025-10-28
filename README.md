@@ -131,7 +131,7 @@ cosign verify-attestation --new-bundle-format --type slsaprovenance1 \
 This repository does not support multiple "channels" for the same application. For example:
 
 - **Prowlarr**, **Radarr**, **Lidarr**, and **Sonarr** only publish the **develop** branch, not the **master** (stable) branch.
-- **qBittorrent** is only published with **LibTorrent 2.x**.
+- **qBittorrent** is only published with **LibTorrent 2.x**. See [this issue](https://github.com/home-operations/containers/issues/848) for more information.
 
 This approach ensures consistency and focuses on streamlined builds.
 
