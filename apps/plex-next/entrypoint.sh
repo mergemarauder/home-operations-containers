@@ -108,13 +108,13 @@ if [[ "${PLEX_PURGE_CODECS}" == "true" ]]; then
     find "${PLEX_MEDIA_SERVER_APPLICATION_SUPPORT_DIR}/Plex Media Server/Codecs" -mindepth 1 -not -name '.device-id' -print -delete
 fi
 
-# Fix VA-API DRI symlink if it doesn't point to the right place
+# Symlink modern VA-API drivers
 vaDriPath="${PLEX_MEDIA_SERVER_APPLICATION_SUPPORT_DIR}/Plex Media Server/Cache/va-dri-linux-${PLEX_MEDIA_SERVER_INFO_MODEL}"
-[[ -L "${vaDriPath}" && "$(readlink -f "${vaDriPath}")" = "/usr/lib/dri" ]] || {
-    echo "Fixing VA-API DRI symlink at ${vaDriPath}..."
+if [[ "$(readlink -f "${vaDriPath}")" != "/usr/lib/dri" ]]; then
+    echo "Updating VA-API drivers..."
     rm -rf "${vaDriPath}" 2>/dev/null
     ln -sf /usr/lib/dri "${vaDriPath}"
-}
+fi
 
 exec \
     /usr/lib/plexmediaserver/Plex\ Media\ Server \
