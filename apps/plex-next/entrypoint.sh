@@ -116,6 +116,9 @@ if [[ "$(readlink -f "${vaDriPath}")" != "/usr/lib/dri" ]]; then
     ln -sf /usr/lib/dri "${vaDriPath}"
 fi
 
+# Preload Plex bundled SSL libraries to avoid issues with newer SSL versions in host distros. They are still using Python 2.7 :sadge:
+export LD_PRELOAD="${PLEX_MEDIA_SERVER_HOME}/lib/libssl.so.3:${PLEX_MEDIA_SERVER_HOME}/lib/libcrypto.so.3"
+
 exec \
     /usr/lib/plexmediaserver/Plex\ Media\ Server \
     "$@"

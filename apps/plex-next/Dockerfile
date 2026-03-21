@@ -5,7 +5,7 @@ ARG TARGETARCH
 ARG VENDOR
 ARG VERSION
 
-ENV LD_LIBRARY_PATH="/lib" \
+ENV LD_LIBRARY_PATH="/lib:/usr/lib" \
     LIBVA_DRIVERS_PATH="/usr/lib/dri" \
     MESA_SHADER_CACHE_DIR="/tmp" \
     NVIDIA_DRIVER_CAPABILITIES="compute,video,utility" \
@@ -43,9 +43,6 @@ RUN \
         "https://downloads.plex.tv/plex-media-server-new/${VERSION}/debian/plexmediaserver_${VERSION}_${TARGETARCH}.deb" \
     && dpkg-deb -R /tmp/plex.deb /tmp \
     && cp -R /tmp/usr/* /usr \
-    && ln -sf /usr/lib/libva.so.2 "${PLEX_MEDIA_SERVER_HOME}/lib/libva.so.2" \
-    && ln -sf /usr/lib/libdrm.so.2 "${PLEX_MEDIA_SERVER_HOME}/lib/libdrm.so.2" \
-    && ln -sf /usr/lib/libva-drm.so.2 "${PLEX_MEDIA_SERVER_HOME}/lib/libva-drm.so.2" \
     && chmod -R 755 "${PLEX_MEDIA_SERVER_HOME}" \
     && apk del --purge .build-deps \
     && rm -rf /tmp/*
