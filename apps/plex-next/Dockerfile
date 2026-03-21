@@ -9,18 +9,14 @@ RUN \
         build-base \
         linux-headers \
         perl \
-        zlib-dev \
-    && \
-    wget -qO- "https://github.com/openssl/openssl/releases/download/openssl-${OPENSSL_VERSION}/openssl-${OPENSSL_VERSION}.tar.gz" \
+    && wget -qO- "https://github.com/openssl/openssl/releases/download/openssl-${OPENSSL_VERSION}/openssl-${OPENSSL_VERSION}.tar.gz" \
         | tar xz --strip-components=1 \
-    && \
-    ./config \
+    && ./config \
         --prefix="${OPENSSL_PREFIX}" \
         --openssldir="${OPENSSL_PREFIX}" \
         --libdir=lib \
-        shared \
-        zlib-dynamic \
         enable-comp \
+        threads \
         -Wl,-rpath,${OPENSSL_PREFIX}/lib \
     && make -j$(nproc) \
     && make install_sw install_ssldirs
@@ -50,6 +46,7 @@ RUN \
         catatonit \
         coreutils \
         curl \
+        gcompat \
         jq \
         tzdata \
         xmlstarlet \
