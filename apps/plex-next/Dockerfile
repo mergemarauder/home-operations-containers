@@ -1,5 +1,30 @@
 # syntax=docker/dockerfile:1
 
+FROM docker.io/library/alpine:3.23 AS openssl-builder
+ARG OPENSSL_VERSION=3.6.1
+ARG OPENSSL_PREFIX=/opt/openssl
+
+RUN \
+    apk add --no-cache \
+        build-base \
+        linux-headers \
+        perl \
+        zlib-dev \
+    && \
+    wget -qO- "https://github.com/openssl/openssl/releases/download/openssl-${OPENSSL_VERSION}/openssl-${OPENSSL_VERSION}.tar.gz" \
+        | tar xz --strip-components=1 \
+    && \
+    ./config \
+        --prefix="${OPENSSL_PREFIX}" \
+        --openssldir="${OPENSSL_PREFIX}" \
+        --libdir=lib \
+        shared \
+        zlib-dynamic \
+        enable-comp \
+        -Wl,-rpath,${OPENSSL_PREFIX}/lib \
+    && make -j$(nproc) \
+    && make install_sw install_ssldirs
+
 FROM docker.io/library/alpine:3.23
 ARG TARGETARCH
 ARG VENDOR
@@ -43,10 +68,14 @@ RUN \
         "https://downloads.plex.tv/plex-media-server-new/${VERSION}/debian/plexmediaserver_${VERSION}_${TARGETARCH}.deb" \
     && dpkg-deb -R /tmp/plex.deb /tmp \
     && cp -R /tmp/usr/* /usr \
+    && rm "${PLEX_MEDIA_SERVER_HOME}/lib/ld-musl-$(uname -m).so.1" "${PLEX_MEDIA_SERVER_HOME}/lib/libc.so" \
+    && find "${PLEX_MEDIA_SERVER_HOME}/lib" -type f -exec sh -c '[ -f "/usr/lib/$(basename "{}")" ] && rm -v "{}"' \; \
     && chmod -R 755 "${PLEX_MEDIA_SERVER_HOME}" \
     && apk del --purge .build-deps \
     && rm -rf /tmp/*
 
+COPY --from=openssl-builder /opt/openssl/lib/libcrypto.so* /usr/lib/
+COPY --from=openssl-builder /opt/openssl/lib/libssl.so*    /usr/lib/
 COPY . /
 
 USER nobody:nogroup
