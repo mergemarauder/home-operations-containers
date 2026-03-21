@@ -6,6 +6,7 @@ ARG VENDOR
 ARG VERSION
 
 ENV LD_LIBRARY_PATH="/lib" \
+    LIBVA_DRIVERS_PATH="/usr/lib/dri" \
     MESA_SHADER_CACHE_DIR="/tmp" \
     NVIDIA_DRIVER_CAPABILITIES="compute,video,utility" \
     PLEX_MEDIA_SERVER_APPLICATION_SUPPORT_DIR="/config/Library/Application Support" \
