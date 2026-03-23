@@ -56,7 +56,7 @@ RUN \
         libva \
         mesa-dri-gallium \
         mesa-va-gallium \
-        $( [ "${TARGETARCH}" = "amd64" ] && echo intel-media-driver libva-intel-driver ) \
+        $( [ "${TARGETARCH}" = "amd64" ] && echo intel-media-driver ) \
     && \
     apk add --no-cache --virtual=.build-deps \
         dpkg \
@@ -65,8 +65,10 @@ RUN \
         "https://downloads.plex.tv/plex-media-server-new/${VERSION}/debian/plexmediaserver_${VERSION}_${TARGETARCH}.deb" \
     && dpkg-deb -R /tmp/plex.deb /tmp \
     && cp -R /tmp/usr/* /usr \
-    && rm "${PLEX_MEDIA_SERVER_HOME}/lib/ld-musl-$(uname -m).so.1" "${PLEX_MEDIA_SERVER_HOME}/lib/libc.so" \
     && find "${PLEX_MEDIA_SERVER_HOME}/lib" -type f -exec sh -c '[ -f "/usr/lib/$(basename "{}")" ] && rm -v "{}"' \; \
+    && find "${PLEX_MEDIA_SERVER_HOME}/lib" -type f -exec sh -c '[ -f "/lib/$(basename "{}")" ] && rm -v "{}"' \; \
+    && ln -sf "/lib/ld-musl-$(uname -m).so.1" "${PLEX_MEDIA_SERVER_HOME}/lib/ld-musl-$(uname -m).so.1" \
+    && ln -sf "/lib/ld-musl-$(uname -m).so.1" "${PLEX_MEDIA_SERVER_HOME}/lib/libc.so" \
     && chmod -R 755 "${PLEX_MEDIA_SERVER_HOME}" \
     && apk del --purge .build-deps \
     && rm -rf /tmp/*
